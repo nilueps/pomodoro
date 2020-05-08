@@ -1,6 +1,5 @@
 {
   "name": "fcc-pomodoro-clock",
-  "homepage": "http://code.nilueps.net.s3-website-us-east-1.amazonaws.com/fcc-pomodoro-clock/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
