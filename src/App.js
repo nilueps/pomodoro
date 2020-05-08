@@ -29,7 +29,7 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = INITIAL_STATE
-    this.handleClick = this.handleClick.bind(this)
+    this.playPauseReset = this.playPauseReset.bind(this)
   }
   componentDidMount() {
     this.timerID = setInterval(() => this.tic(), 1000)
@@ -38,39 +38,33 @@ class App extends React.Component {
   componentWillUnmount() {
     clearInterval(this.timerID)
   }
-  handleClick = e => {
-    let { settings, timer, stats } = this.state
+  changeSettings = (i, e) => {
+    let { settings, timer } = this.state
     switch (e.currentTarget.id) {
-      case 'break-increment':
-        settings.breakLength = Math.min(60, settings.breakLength + 1)
-        if (timer.status === 'break') {
-          timer.timeLeft = millisecs(settings.breakLength)
+      case 'break':
+        settings.breakLength = i > 0 ? Math.min(60, settings.breakLength + i) : Math.max(1, settings.breakLength - 1)
+        if (timer.status === 'break') timer.timeLeft = millisecs(settings.breakLength)
+        break
+      case 'session':
+        settings.sessionLength = i > 0 ? Math.min(60, settings.sessionLength + i) : Math.max(1, settings.sessionLength - 1)
+        if (timer.status === 'session') timer.timeLeft = millisecs(settings.sessionLength)
+        break
+      case 'blocks':
+        if (i > 0) {
+          if (settings.blocks.length < 10) settings.blocks.unshift(1)
+        } else {
+          if (settings.blocks.length > 1) settings.blocks.shift()
         }
         break
-      case 'break-decrement':
-        settings.breakLength = Math.max(1, settings.breakLength - 1)
-        if (timer.status === 'break') {
-          timer.timeLeft = millisecs(settings.breakLength)
-        }
+      default:
         break
-      case 'session-increment':
-        settings.sessionLength = Math.min(60, settings.sessionLength + 1)
-        if (timer.status === 'session' || timer.status === 'ready') {
-          timer.timeLeft = millisecs(settings.sessionLength)
-        }
-        break
-      case 'session-decrement':
-        settings.sessionLength = Math.max(1, settings.sessionLength - 1)
-        if (timer.status === 'session' || timer.status === 'ready') {
-          timer.timeLeft = millisecs(settings.sessionLength)
-        }
-        break
-      case 'blocks-increment':
-        if (settings.blocks.length < 10) settings.blocks.unshift(1)
-        break
-      case 'blocks-decrement':
-        if (settings.blocks.length > 1) settings.blocks.shift()
-        break
+    }
+    this.setState({ settings, timer })
+  }
+  playPauseReset = e => {
+    let { settings, timer, stats } = this.state
+    
+    switch (e.currentTarget.id) {
       case 'playPause':
         timer.isRunning = !timer.isRunning
         switch (timer.status) {
@@ -92,7 +86,8 @@ class App extends React.Component {
           default:
             return
         }
-        break
+        this.setState({ settings, timer })
+        return
       case 'reset':
         if (timer.status === 'ready') {
           stats.timeElapsed = 0
@@ -103,16 +98,15 @@ class App extends React.Component {
         settings.blocks = settings.blocks.map(v => 1)
         timer.timeLeft = millisecs(settings.sessionLength)
         timer.isRunning = false
-        break
+        this.setState({ settings, timer, stats })
+        return
       default:
         return
     }
-    this.setState({ settings, timer, stats }, () => this.computeStats())
   }
   
   tic() {
     let { settings, timer, stats } = this.state
-
     if (timer.isRunning) {
       if (timer.timeLeft === 0) {
         if (timer.status === 'session') {
@@ -179,22 +173,22 @@ class App extends React.Component {
             key="0"
             label="session"
             value={this.state.settings.sessionLength}
-            callback={this.handleClick}
+            callback={this.changeSettings}
           />
           <Incrementer
             key="1"
             label="break"
             value={this.state.settings.breakLength}
-            callback={this.handleClick}
+            callback={this.changeSettings}
           />
           <Incrementer
             key="2"
             label="blocks"
             value={this.state.settings.blocks.length}
-            callback={this.handleClick}
+            callback={this.changeSettings}
           />
         </div>
-        <Controls isRunning={this.state.timer.isRunning} callback={this.handleClick} />
+        <Controls isRunning={this.state.timer.isRunning} callback={this.playPauseReset} />
         <Timer {...this.state.timer} blocks={this.state.settings.blocks} />
         <Stats {...this.state} />
       </div>

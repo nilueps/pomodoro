@@ -8,8 +8,6 @@ export function Incrementer(props) {
   // props include value to display, as well as a callback function
   // to change that value stored in parent state
   const idLabel = props.label + '-label'
-  const idIncrement = props.label + '-increment'
-  const idDecrement = props.label + '-decrement'
   const idValue = props.label + '-value'
   const labelText =
     props.label[0].toUpperCase() + props.label.slice(1) + (props.label !== 'blocks' ? ' Length' : '')
@@ -19,10 +17,10 @@ export function Incrementer(props) {
         {labelText}
       </div>
       <div className="updown">
-        <div className="btn up" id={idIncrement} onClick={props.callback}>
+        <div className="btn up" id={props.label} onClick={e => props.callback(1, e)}>
           +
         </div>
-        <div className="btn down" id={idDecrement} onClick={props.callback}>
+        <div className="btn down" id={props.label} onClick={e => props.callback(-1, e)}>
           &ndash;
         </div>
       </div>
@@ -75,7 +73,7 @@ export function Stats(props) {
   return (
     <div className="stats">
       <div>Total time remaining: {getHumanTime(totalTimeLeft, 'hm')}</div>
-      <div>Finish at {getHumanTime(new Date(Date.now() + totalTimeLeft), 'hm:a')}</div>
+      <div>Series ends at {getHumanTime(new Date(Date.now() + totalTimeLeft), 'hm:a')}</div>
       <hr />
       <div>Sessions completed: {stats.sessionsCompleted}</div>
       <div>Total session time: {getHumanTime(stats.timeElapsed, 'hm')}</div>
