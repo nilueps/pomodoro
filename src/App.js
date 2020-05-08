@@ -16,7 +16,6 @@ const INITIAL_STATE = {
     status: 'ready',
     lastStatus: '',
     timeLeft: 0,
-    lastMinute: false,
     isRunning: false,
   },
   stats: {
@@ -41,13 +40,13 @@ class App extends React.Component {
   changeSettings = (i, e) => {
     let { settings, timer } = this.state
     switch (e.currentTarget.id) {
+      case 'session':
+        settings.sessionLength = i > 0 ? Math.min(60, settings.sessionLength + i) : Math.max(1, settings.sessionLength - 1)
+        if (timer.status === 'session' || timer.status === 'ready' || timer.status === 'series complete') timer.timeLeft = millisecs(settings.sessionLength)
+        break
       case 'break':
         settings.breakLength = i > 0 ? Math.min(60, settings.breakLength + i) : Math.max(1, settings.breakLength - 1)
         if (timer.status === 'break') timer.timeLeft = millisecs(settings.breakLength)
-        break
-      case 'session':
-        settings.sessionLength = i > 0 ? Math.min(60, settings.sessionLength + i) : Math.max(1, settings.sessionLength - 1)
-        if (timer.status === 'session') timer.timeLeft = millisecs(settings.sessionLength)
         break
       case 'blocks':
         if (i > 0) {
@@ -106,8 +105,8 @@ class App extends React.Component {
   }
   
   tic() {
-    let { settings, timer, stats } = this.state
-    if (timer.isRunning) {
+    if (this.state.timer.isRunning) {
+      let { settings, timer, stats } = this.state
       if (timer.timeLeft === 0) {
         if (timer.status === 'session') {
           stats.sessionsCompleted += 1
@@ -139,12 +138,9 @@ class App extends React.Component {
         timer.timeLeft -= 1000
         if (timer.status === 'session') stats.timeElapsed += 1000
       }
-      timer.lastMinute = timer.timeLeft < 60000 ? true : false
-    } else {
-      timer.lastMinute = false
+    this.setState({ settings, timer, stats })
     }
 
-    this.setState({ settings, timer, stats })
     
     return
   }

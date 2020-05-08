@@ -44,7 +44,8 @@ export function Controls(props) {
 }
 export function Timer(props) {
   // props include time left and current status (break or session)
-  const redAlert = props.lastMinute ? ' red-alert' : ''
+  const lastMinute = props.isRunning && props.timeLeft < 60000 ? true : false
+  const redAlert = lastMinute ? ' red-alert' : ''
   const blockDots = props.blocks.map((v, i) => {
     return v ? (
       <FontAwesomeIcon key={i} icon={fasCircle} />
