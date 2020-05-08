@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/static/css/main.54987e1d.chunk.css",
+    "main.js": "/static/js/main.133056a5.chunk.js",
+    "main.js.map": "/static/js/main.133056a5.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.70483950.js",
+    "runtime-main.js.map": "/static/js/runtime-main.70483950.js.map",
+    "static/js/2.303aab4c.chunk.js": "/static/js/2.303aab4c.chunk.js",
+    "static/js/2.303aab4c.chunk.js.map": "/static/js/2.303aab4c.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.8665750f7f4b331fbc06c0e64b5deafb.js": "/precache-manifest.8665750f7f4b331fbc06c0e64b5deafb.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.54987e1d.chunk.css.map": "/static/css/main.54987e1d.chunk.css.map",
+    "static/js/2.303aab4c.chunk.js.LICENSE.txt": "/static/js/2.303aab4c.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/static/media/Roboto-Thin.321de678.ttf",
+    "static/media/bell.ogg": "/static/media/bell.45dd5ea1.ogg",
+    "static/media/deepbell.ogg": "/static/media/deepbell.204def96.ogg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.70483950.js",
+    "static/js/2.303aab4c.chunk.js",
+    "static/css/main.54987e1d.chunk.css",
+    "static/js/main.133056a5.chunk.js"
+  ]
+}
