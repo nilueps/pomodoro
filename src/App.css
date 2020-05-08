@@ -1,38 +1,114 @@
-.App {
-  text-align: center;
+
+
+.pomodoro {
+  width: 320px;
+  color: black;
+  background-color: rgb(117, 125, 136);
+  border-radius: 8px;
+  user-select: none;
+  border: 1px solid #333333;
+  margin: -1px;
+  overflow: hidden;
+}
+.incrementers {
+  display: inline-block;
+  width: 100%
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.incrementer {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  font-size: 1.5rem;
+  border-bottom: 1px solid #333333;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.incrementer .label {
+  width: 160px;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.incrementer .updown {
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.updown > div {
+  width: 100%;
+  border: 1px solid #333333;
+  margin: -1px;
+  width: 40px;
+  height: 40px;
+  font-size: 2rem;
+  line-height: 2.5rem;
+}
+.up {
+  background-color: hsl(248, 25%, 39%);
+}
+.down {
+  background-color: hsl(0, 30%, 41%);
+}
+
+.incrementer .number {
+  font-size: 2rem;
+  width: 50px;
+}
+
+.controls {
+  display: flex;
+  justify-content: stretch;
+  align-items: center;
+}
+.controls > .btn {
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  width: 100%;
+  height: 40px;
+  background-color: hsl(215, 8%, 45%);
+  border: 1px solid #333333;
+  margin: -1px;
 }
 
-.App-link {
-  color: #61dafb;
+.timer {
+  font-size: 3rem;
+  padding: 10px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.timer-label {
+  font-size: 2.25rem;
+}
+
+.time-left {
+  font-size: 4rem;
+  font-weight: 400;
+}
+
+.red-alert {
+  animation: alert 500ms infinite alternate;
+}
+
+.blocks-display {
+  font-size: 0.75rem;
+}
+.blocks-display > svg {
+  margin: 3px 8px;
+}
+
+.stats {
+  border-top: 1px solid #333;
+  padding: 10px;
+  font-size: 1.4rem;
+}
+
+@keyframes alert {
+  from{  background-color: rgb(117, 125, 136); color: black }
+  to {background-color: rgb(201, 121, 107); color: maroon;}
+}
+
+.btn {
+  transition: filter 50ms;
+  outline: none;
+}
+
+.btn:hover {
+  filter: brightness(1.2) saturate(1.5);
 }

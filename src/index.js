@@ -6,7 +6,10 @@ import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
+    <div className="app-wrapper">
     <App />
+    <p>created by<br/><a href="https://nilueps.net/">nilueps</a></p>
+    </div>
   </React.StrictMode>,
   document.getElementById('root')
 );
