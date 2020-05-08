@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/pomodoro/static/css/main.c100c63e.chunk.css",
+    "main.js": "/pomodoro/static/js/main.d5b5fc69.chunk.js",
+    "main.js.map": "/pomodoro/static/js/main.d5b5fc69.chunk.js.map",
+    "runtime-main.js": "/pomodoro/static/js/runtime-main.c10c1eab.js",
+    "runtime-main.js.map": "/pomodoro/static/js/runtime-main.c10c1eab.js.map",
+    "static/js/2.303aab4c.chunk.js": "/pomodoro/static/js/2.303aab4c.chunk.js",
+    "static/js/2.303aab4c.chunk.js.map": "/pomodoro/static/js/2.303aab4c.chunk.js.map",
+    "index.html": "/pomodoro/index.html",
+    "precache-manifest.a92056ad3f4ac6eaef0f9899267e5b52.js": "/pomodoro/precache-manifest.a92056ad3f4ac6eaef0f9899267e5b52.js",
+    "service-worker.js": "/pomodoro/service-worker.js",
+    "static/css/main.c100c63e.chunk.css.map": "/pomodoro/static/css/main.c100c63e.chunk.css.map",
+    "static/js/2.303aab4c.chunk.js.LICENSE.txt": "/pomodoro/static/js/2.303aab4c.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/pomodoro/static/media/Roboto-Thin.321de678.ttf",
+    "static/media/bell.ogg": "/pomodoro/static/media/bell.45dd5ea1.ogg",
+    "static/media/deepbell.ogg": "/pomodoro/static/media/deepbell.204def96.ogg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.c10c1eab.js",
+    "static/js/2.303aab4c.chunk.js",
+    "static/css/main.c100c63e.chunk.css",
+    "static/js/main.d5b5fc69.chunk.js"
+  ]
+}
