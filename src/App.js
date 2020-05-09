@@ -14,7 +14,6 @@ const INITIAL_STATE = {
   },
   timer: {
     status: 'ready',
-    lastStatus: '',
     timeLeft: 0,
     isRunning: false,
   },
@@ -23,6 +22,22 @@ const INITIAL_STATE = {
     sessionsCompleted: 0,
   },
 }
+/* const INITIAL_STATE = {
+  settings: {
+    breakLength: 5,
+    sessionLength: 25,
+    blocks: [1, 1, 1, 1],
+  },
+  timer: {
+    status: 'ready',
+    timeLeft: 0,
+    isRunning: false,
+  },
+  stats: {
+    timeElapsed: 0,
+    sessionsCompleted: 0,
+  },
+} */
 
 class App extends React.Component {
   constructor(props) {
@@ -73,17 +88,8 @@ class App extends React.Component {
             timer.status = 'session'
             timer.timeLeft = millisecs(settings.sessionLength)
             break
-          case 'session':
-          case 'break':
-            timer.lastStatus = timer.status
-            timer.status = 'paused'
-            break
-          case 'paused':
-            timer.status = timer.lastStatus
-            timer.lastStatus = 'paused'
-            break
           default:
-            return
+            break
         }
         this.setState({ settings, timer })
         return
@@ -100,13 +106,14 @@ class App extends React.Component {
         this.setState({ settings, timer, stats })
         return
       default:
-        return
+        break
     }
   }
   
   tic() {
-    if (this.state.timer.isRunning) {
-      let { settings, timer, stats } = this.state
+    let { settings, timer, stats } = this.state
+    if (timer.isRunning) {
+      console.log('running')
       if (timer.timeLeft === 0) {
         if (timer.status === 'session') {
           stats.sessionsCompleted += 1
@@ -135,14 +142,16 @@ class App extends React.Component {
           this.beep.play()
         }
       } else {
+        console.log('tictoc')
         timer.timeLeft -= 1000
         if (timer.status === 'session') stats.timeElapsed += 1000
       }
-    this.setState({ settings, timer, stats })
+      this.setState({ settings, timer, stats }, () => console.log('updated'))
+      return
     }
-
+      // keep completion time updated if paused
+    this.setState({ stats })
     
-    return
   }
 
   render() {
@@ -185,7 +194,7 @@ class App extends React.Component {
           />
         </div>
         <Controls isRunning={this.state.timer.isRunning} callback={this.playPauseReset} />
-        <Timer {...this.state.timer} blocks={this.state.settings.blocks} />
+        <Timer timer={this.state.timer} blocks={this.state.settings.blocks} />
         <Stats {...this.state} />
       </div>
     )
