@@ -4,40 +4,22 @@ import deepBell from './deepbell.ogg'
 import './App.css'
 
 import { millisecs } from './helpers'
-import { Incrementer, Controls, Timer, Stats } from './components'
+import Stats from "./components/Stats"
+import Timer from "./components/Timer"
+import Settings from "./components/Settings"
+import Incrementer from "./components/Incrementer"
 
 const INITIAL_STATE = {
-  settings: {
-    breakLength: 5,
-    sessionLength: 25,
-    blocks: [1, 1, 1, 1],
-  },
-  timer: {
-    status: 'ready',
-    timeLeft: 0,
-    isRunning: false,
-  },
-  stats: {
-    timeElapsed: 0,
-    sessionsCompleted: 0,
-  },
+  sessionLength: 25,
+  breakLength: 5,
+  blocks: [1, 1, 1, 1],
+  status: 'ready',
+  timeLeft: 0,
+  isRunning: false,
+  timeElapsed: 0,
+  sessionsCompleted: 0,
+  now: Date.now(),
 }
-/* const INITIAL_STATE = {
-  settings: {
-    breakLength: 5,
-    sessionLength: 25,
-    blocks: [1, 1, 1, 1],
-  },
-  timer: {
-    status: 'ready',
-    timeLeft: 0,
-    isRunning: false,
-  },
-  stats: {
-    timeElapsed: 0,
-    sessionsCompleted: 0,
-  },
-} */
 
 class App extends React.Component {
   constructor(props) {
@@ -45,65 +27,69 @@ class App extends React.Component {
     this.state = INITIAL_STATE
     this.playPauseReset = this.playPauseReset.bind(this)
   }
+
   componentDidMount() {
     this.timerID = setInterval(() => this.tic(), 1000)
-    this.setState({ timer: { ...this.state.timer, timeLeft: millisecs(this.state.settings.sessionLength) } })
+    this.setState({ timeLeft: millisecs(this.state.sessionLength) })
   }
+
   componentWillUnmount() {
     clearInterval(this.timerID)
   }
+
   changeSettings = (i, e) => {
-    let { settings, timer } = this.state
+    let { sessionLength, breakLength, timeLeft } = this.state
+    let blocks = [...this.state.blocks]
     switch (e.currentTarget.id) {
       case 'session':
-        settings.sessionLength = i > 0 ? Math.min(60, settings.sessionLength + i) : Math.max(1, settings.sessionLength - 1)
-        if (timer.status === 'session' || timer.status === 'ready' || timer.status === 'series complete') timer.timeLeft = millisecs(settings.sessionLength)
+        sessionLength =
+          i > 0 ? Math.min(60, sessionLength + i) : Math.max(1, sessionLength - 1)
+        if (this.state.status !== 'break') timeLeft = millisecs(sessionLength)
         break
       case 'break':
-        settings.breakLength = i > 0 ? Math.min(60, settings.breakLength + i) : Math.max(1, settings.breakLength - 1)
-        if (timer.status === 'break') timer.timeLeft = millisecs(settings.breakLength)
+        breakLength =
+          i > 0 ? Math.min(60, breakLength + i) : Math.max(1, breakLength - 1)
+        if (this.state.status === 'break') timeLeft = millisecs(breakLength)
         break
       case 'blocks':
         if (i > 0) {
-          if (settings.blocks.length < 10) settings.blocks.unshift(1)
+          if (blocks.length < 10) blocks.unshift(1)
         } else {
-          if (settings.blocks.length > 1) settings.blocks.shift()
+          if (blocks.length > 1) blocks.shift()
         }
         break
       default:
         break
     }
-    this.setState({ settings, timer })
+    this.setState({ sessionLength, breakLength, blocks, timeLeft })
   }
+
   playPauseReset = e => {
-    let { settings, timer, stats } = this.state
-    
+    let { sessionLength, timeLeft, status, isRunning, timeElapsed, sessionsCompleted } = this.state
+    let blocks = [...this.state.blocks]
     switch (e.currentTarget.id) {
       case 'playPause':
-        timer.isRunning = !timer.isRunning
-        switch (timer.status) {
-          case 'ready':
-          case 'series complete':
-            settings.blocks = settings.blocks.map(v => 1)
-            timer.status = 'session'
-            timer.timeLeft = millisecs(settings.sessionLength)
-            break
-          default:
-            break
+        isRunning = !isRunning
+        this.setState({ isRunning })
+        if (status === 'ready' || status === 'series completed') {
+          blocks = blocks.map(v => 1)
+          status = 'session'
+          timeLeft = millisecs(sessionLength)
+          this.setState({ blocks, status, timeLeft })
         }
-        this.setState({ settings, timer })
         return
       case 'reset':
-        if (timer.status === 'ready') {
-          stats.timeElapsed = 0
-          stats.sessionsCompleted = 0
+        if (status === 'ready') {
+          timeElapsed = 0
+          sessionsCompleted = 0
+          this.setState({ timeElapsed, sessionsCompleted })
         } else {
-          timer.status = 'ready'
+          status = 'ready'
         }
-        settings.blocks = settings.blocks.map(v => 1)
-        timer.timeLeft = millisecs(settings.sessionLength)
-        timer.isRunning = false
-        this.setState({ settings, timer, stats })
+        blocks = blocks.map(v => 1)
+        timeLeft = millisecs(sessionLength)
+        isRunning = false
+        this.setState({ blocks, status, timeLeft, isRunning })
         return
       default:
         break
@@ -111,47 +97,65 @@ class App extends React.Component {
   }
   
   tic() {
-    let { settings, timer, stats } = this.state
-    if (timer.isRunning) {
-      console.log('running')
-      if (timer.timeLeft === 0) {
-        if (timer.status === 'session') {
-          stats.sessionsCompleted += 1
-          if (settings.blocks.reduce((a, c) => a + c) === 1) {
-            settings.blocks[0] = 0
-            timer.isRunning = false
-            timer.status = 'series complete'
-            timer.timeLeft = 0
+    // console.count('Tic')
+    let {
+      sessionLength,
+      breakLength,
+      blocks,
+      status,
+      timeLeft,
+      isRunning,
+      timeElapsed,
+      sessionsCompleted,
+    } = this.state
+    if (isRunning) {
+      if (timeLeft === 0) {
+        if (status === 'session') {
+          sessionsCompleted += 1
+          if (blocks.reduce((a, c) => a + c) === 1) {
+            blocks[0] = 0
+            isRunning = false
+            status = 'series complete'
+            timeLeft = 0
             this.bell.currentTime = 0
             this.bell.play()
           } else {
-            timer.status = 'break'
-            timer.timeLeft = millisecs(settings.breakLength)
+            status = 'break'
+            timeLeft = millisecs(breakLength)
             this.beep.currentTime = 0
             this.beep.play()
           }
-        } else if (timer.status === 'break') {
-          if (settings.blocks[settings.blocks.length - 1]) {
-            settings.blocks[settings.blocks.length - 1] = 0
+        } else if (status === 'break') {
+          if (blocks[blocks.length - 1]) {
+            blocks[blocks.length - 1] = 0
           } else {
-            settings.blocks[settings.blocks.indexOf(0) - 1] = 0
+            blocks[blocks.indexOf(0) - 1] = 0
           }
-          timer.status = 'session'
-          timer.timeLeft = millisecs(settings.sessionLength)
+          status = 'session'
+          timeLeft = millisecs(sessionLength)
           this.beep.currentTime = 0
           this.beep.play()
         }
       } else {
-        console.log('tictoc')
-        timer.timeLeft -= 1000
-        if (timer.status === 'session') stats.timeElapsed += 1000
+        timeLeft -= 1000
+        if (status === 'session') timeElapsed += 1000
       }
-      this.setState({ settings, timer, stats }, () => console.log('updated'))
+      this.setState({
+        sessionLength,
+        breakLength,
+        blocks,
+        status,
+        timeLeft,
+        isRunning,
+        timeElapsed,
+        sessionsCompleted,
+        now: Date.now(),
+      })
       return
-    }
+    } else {
       // keep completion time updated if paused
-    this.setState({ stats })
-    
+      this.setState({ now: Date.now() })
+    }
   }
 
   render() {
@@ -177,24 +181,29 @@ class App extends React.Component {
           <Incrementer
             key="0"
             label="session"
-            value={this.state.settings.sessionLength}
+            value={this.state.sessionLength}
             callback={this.changeSettings}
           />
           <Incrementer
             key="1"
             label="break"
-            value={this.state.settings.breakLength}
+            value={this.state.breakLength}
             callback={this.changeSettings}
           />
           <Incrementer
             key="2"
             label="blocks"
-            value={this.state.settings.blocks.length}
+            value={this.state.blocks.length}
             callback={this.changeSettings}
           />
         </div>
-        <Controls isRunning={this.state.timer.isRunning} callback={this.playPauseReset} />
-        <Timer timer={this.state.timer} blocks={this.state.settings.blocks} />
+        <Settings isRunning={this.state.isRunning} callback={this.playPauseReset} />
+        <Timer
+          isRunning={this.state.isRunning}
+          status={this.state.status}
+          timeLeft={this.state.timeLeft}
+          blocks={this.state.blocks}
+        />
         <Stats {...this.state} />
       </div>
     )
