@@ -6,7 +6,7 @@ import './App.css'
 import { millisecs } from './helpers'
 import Stats from "./components/Stats"
 import Timer from "./components/Timer"
-import Settings from "./components/Settings"
+import Controls from "./components/Settings"
 import Incrementer from "./components/Incrementer"
 
 const INITIAL_STATE = {
@@ -71,7 +71,7 @@ class App extends React.Component {
       case 'playPause':
         isRunning = !isRunning
         this.setState({ isRunning })
-        if (status === 'ready' || status === 'series completed') {
+        if (status === 'ready' || status === 'series complete') {
           blocks = blocks.map(v => 1)
           status = 'session'
           timeLeft = millisecs(sessionLength)
@@ -197,7 +197,7 @@ class App extends React.Component {
             callback={this.changeSettings}
           />
         </div>
-        <Settings isRunning={this.state.isRunning} callback={this.playPauseReset} />
+        <Controls isRunning={this.state.isRunning} callback={this.playPauseReset} />
         <Timer
           isRunning={this.state.isRunning}
           status={this.state.status}

@@ -11,7 +11,7 @@ export default class Timer extends PureComponent {
     let label = this.props.status[0].toUpperCase() + this.props.status.slice(1);
     if (!this.props.isRunning &&
       (this.props.status === 'session' || this.props.status === 'break')) {
-      label = 'Paused';
+      label = label + ' paused';
     }
     const blockDots = this.props.blocks.map((v, i) => {
       return v ? (<FontAwesomeIcon key={i} icon={fasCircle} />) : (<FontAwesomeIcon key={i} icon={farCircle} />);
